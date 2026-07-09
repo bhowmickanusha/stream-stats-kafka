@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Pulse — YouTube View Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #120B1E;
+    --bg-alt: #1C1130;
+    --card: #1F1433;
+    --pink: #FF3E7F;
+    --yellow: #FFD23F;
+    --cyan: #35E8D0;
+    --violet: #A26BFA;
+    --text: #F5F1FF;
+    --text-dim: #9C8FB8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: radial-gradient(ellipse at top left, var(--bg-alt) 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+  }
+
+  header {
+    max-width: 1100px;
+    margin: 0 auto 56px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: var(--cyan);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 0 0 rgba(53, 232, 208, 0.7);
+    animation: pulse 1.8s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(53, 232, 208, 0.5); }
+    70% { box-shadow: 0 0 0 10px rgba(53, 232, 208, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(53, 232, 208, 0); }
+  }
+
+  h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    background: linear-gradient(90deg, var(--pink), var(--yellow) 50%, var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    margin-top: 14px;
+    color: var(--text-dim);
+    font-size: 15px;
+  }
+
+  #status {
+    max-width: 1100px;
+    margin: 0 auto 32px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+  }
+
+  .stub {
+    position: relative;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 26px 24px 22px;
+    border-top: 5px solid var(--accent);
+    background-image:
+      radial-gradient(circle at 0 60%, var(--bg) 12px, transparent 13px),
+      radial-gradient(circle at 100% 60%, var(--bg) 12px, transparent 13px);
+    animation: rise 0.5s ease backwards;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stub::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 62%;
+    border-top: 2px dashed rgba(245, 241, 255, 0.14);
+  }
+
+  .track-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    min-height: 36px;
+    margin-bottom: 6px;
+  }
+
+  .video-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+
+  .count {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 42px;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .count-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-top: 2px;
+    margin-bottom: 18px;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .delta {
+    color: var(--yellow);
+  }
+
+  .delta.zero { color: var(--text-dim); }
+
+  .empty {
+    max-width: 480px;
+    margin: 60px auto;
+    text-align: center;
+    color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-dot, .stub { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow"><span class="pulse-dot"></span> LIVE TRACKING</div>
+  <h1>LIVE PULSE</h1>
+  <p class="subtitle">Real-time YouTube view counts, polled straight from the source.</p>
+</header>
+
+<div id="status">Connecting to stream&hellip;</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+  const API_BASE = "http://localhost:8000";
+  const REFRESH_MS = 10000;
+  const ACCENTS = ["var(--pink)", "var(--yellow)", "var(--cyan)", "var(--violet)"];
+
+  const grid = document.getElementById("grid");
+  const status = document.getElementById("status");
+  const previousCounts = {};
+
+  function formatCount(n) {
+    return n.toLocaleString("en-US");
+  }
+
+  function formatTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  }
+
+  function animateCount(el, from, to, duration = 900) {
+    const start = performance.now();
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(from + (to - from) * eased);
+      el.textContent = formatCount(value);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function renderCards(items) {
+    grid.innerHTML = "";
+
+    items.forEach((item, i) => {
+      const accent = ACCENTS[i % ACCENTS.length];
+      const prev = previousCounts[item.video_id] ?? item.view_count;
+      const delta = item.view_count - prev;
+
+      const card = document.createElement("div");
+      card.className = "stub";
+      card.style.setProperty("--accent", accent);
+      card.style.animationDelay = `${i * 60}ms`;
+
+      card.innerHTML = `
+        <div class="track-title">${item.title}</div>
+        <div class="video-id">ID: ${item.video_id}</div>
+        <div class="count" data-video="${item.video_id}">${formatCount(prev)}</div>
+        <div class="count-label">TOTAL VIEWS</div>
+        <div class="meta-row">
+          <span class="delta ${delta > 0 ? "" : "zero"}">${delta > 0 ? "+" + formatCount(delta) : "no change"}</span>
+          <span>updated ${formatTime(item.timestamp)}</span>
+        </div>
+      `;
+
+      grid.appendChild(card);
+
+      const countEl = card.querySelector(".count");
+      animateCount(countEl, prev, item.view_count);
+      previousCounts[item.video_id] = item.view_count;
+    });
+  }
+
+  async function fetchStats() {
+    try {
+      const res = await fetch(`${API_BASE}/stats/latest`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      if (!data.length) {
+        grid.innerHTML = "";
+        status.textContent = "Connected — waiting for the first data points to arrive.";
+        return;
+      }
+
+      status.textContent = `Connected — ${data.length} track${data.length > 1 ? "s" : ""} live, refreshing every ${REFRESH_MS / 1000}s`;
+      renderCards(data);
+    } catch (err) {
+      status.textContent = `Can't reach the stats API (${err.message}). Is backend.py running on port 8000?`;
+    }
+  }
+
+  fetchStats();
+  setInterval(fetchStats, REFRESH_MS);
+</script>
+
+</body>
+</html>
