@@ -14,7 +14,7 @@ from kafka import KafkaProducer
 
 # ---- Configuration ----------------------------------------------------
 
-YOUTUBE_API_KEY = "AIzaSyANnKa0wQeFct4diBu_tvlm7nS0XDiLIfc"
+YOUTUBE_API_KEY = "API_KEY_HERE"
 
 # Add the video IDs you want to track (the part after "v=" in a YouTube URL)
 VIDEO_IDS = [
